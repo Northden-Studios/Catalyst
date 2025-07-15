@@ -35,19 +35,27 @@ Catalyst is a Discord bot project focused on personal or community servers, with
 ## Requirements to install
 - Node.js (minimum v21.5.0)
 - npm (JavaScript Package Manager)
+- Discord.js
+- Kazagumo
+- Shoukaku
 
 ## Version Build Release
 | Supported  | Build Version  | Node.js Version | Codename Build | Channel | Release Date | End of Support |
 |-|-|-|-|-|-|-|
 | :white_check_mark: | 1.0.1 | 21.5.0 | Singleton Camaron | Pre-release | 21 June 2025 | 3 January 2026 |
 | :white_check_mark: | 1.0.4 | 21.5.0 | Edge Yarnfield | Stable | 30 June 2025 | 3 January 2026 |
+| :white_check_mark: | 1.1.3 | 21.5.0 | Hedgehog Lynx | Stable | Q3 July 2025 | 3 January 2027 |
 
 ## Installation
 1. Clone this project
 2. Paste the link on your code editor
 3. Configure the file on ``./config.json``
-4. Open the terminal and type ``node index.js`` to start bot
-5. Voila! The Bot is ready to use
+4. Insert your Token Bot to Connect the bot
+5. Save file ``./config.json``
+6. Open the terminal and type ``node deploy-commands.js`` to creating slash commands
+7. Waiting the commands all load properly
+8. After that type ``node index.js`` to start your bot
+9. Voila! The Bot is ready to use
 
 ## Support this project
 You can support this project by joining our server or Pull request
