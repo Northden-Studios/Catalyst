@@ -44,7 +44,7 @@ Catalyst is a Discord bot project focused on personal or community servers, with
 |-|-|-|-|-|-|-|
 | :white_check_mark: | 1.0.1 | 21.5.0 | Singleton Camaron | Pre-release | 21 June 2025 | 3 January 2026 |
 | :white_check_mark: | 1.0.4 | 21.5.0 | Edge Yarnfield | Stable | 30 June 2025 | 3 January 2026 |
-| :white_check_mark: | 1.1.3 | 21.5.0 | Hedgehog Lynx | Stable | Q3 July 2025 | 3 January 2027 |
+| :white_check_mark: | 1.1.3 | 21.5.0 | Castle Ignite | Stable | 12 August 2025 | 13 March 2026 |
 
 ## Installation
 1. Clone this project
