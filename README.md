@@ -20,16 +20,35 @@ Catalyst is designed for multi-purpose tasks on your server, suitable for low to
 ## About this project
 Catalyst is a Discord bot project focused on personal or community servers, with a command system built into the code. Catalyst is designed for your server to be easy to use, simple, fast, and easy to support. Since November 2021, Catalyst has been serving many servers worldwide.
 
-## Key-Features 
+## All Features are in one place! 
 - ``/setup`` use setup commands to first setup bot in the server
+- ``/about`` use about commands to view contributions
 - ``/ping`` use ping commands to check latency ping bot from server
 - ``/meme`` use meme commands to generate random meme (built in code)
+- ``/jokes`` use jokes commands to generate random jokes (built in code)
 - ``/ban`` use ban commands to ban member from the server
-- ``/kick`` use kick commands to kick member from the server 
+- ``/kick`` use kick commands to kick member from the server
+- ``/warn`` use warn commands to warn the user
+- ``/removewarn`` use warn commands to remove warn user
+- ``/warninfo`` use warninfo commands to view how much user get the warn
+- ``/clearwarnings`` use clearwarnings commands to clear history warning the user
+- ``/mute`` use mute commands to mute the user
+- ``/muteinfo`` use muteinfo commands to view how much user get mute and counting release unmute
+- ``/unmute`` use unmute commands to unmute user
+- ``/timeout`` use timeout commands to timeout user for while minutes, hour or day
+- ``/untimeout`` use untimeout commands to untimeout user
+- ``/addroles`` use addroles commands to addrole the user
+- ``/removeroles`` use removeroles commands to remove roles the user
 - ``/play`` use play commands to play music in voice channel
 - ``/queue`` use queue commands to view queue music in voice channel
 - ``/skip`` use skip commands to skip music in voice channel
 - ``/stop`` use stop commands to stop music in voice channel
+- ``/pause`` use puase commands to pause music in voice channel
+- ``/resume`` use resume commands to resume music in voice channel
+- ``/loop`` use loop commands to loop music by queue or playlist in voice channel
+- ``/shuffle`` use shuffle commands to shuffle music by recommendation
+- ``/volume`` use volume commands to adjust the volume music in the voice channel
+- ``/clear`` use clear commands to clear queue on the bot
 - ``/support`` use support commands to view support (ex. documentation or help)
 
 ## Requirements to install
