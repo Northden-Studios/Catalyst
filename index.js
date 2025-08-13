@@ -2,7 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits, ActivityType, IntentsBitField, EmbedBuilder } = require('discord.js');
 const { token } = require('./config.json');
-const { DisTube } = require('distube');
+const { Connectors } = require('shoukaku');
+const { Kazagumo, Plugins } = require('kazagumo');
+const LinkIdentifier = require('./commands/security/identifier.js');
 
 const client = new Client({ 
     intents: [
@@ -10,23 +12,31 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates, 
         GatewayIntentBits.GuildMessages, 
         GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.MessageContent
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildIntegrations
     ] 
 });
 
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandCategories = fs.readdirSync(commandsPath).filter(file => {
+    return fs.statSync(path.join(commandsPath, file)).isDirectory();
+});
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    
-    if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-    } else {
-        console.log(`[WARNING] Perintah di ${filePath} tidak memiliki properti "data" atau "execute" yang diperlukan.`);
+for (const category of commandCategories) {
+    const categoryPath = path.join(commandsPath, category);
+    const commandFiles = fs.readdirSync(categoryPath).filter(file => file.endsWith('.js'));
+
+    for (const file of commandFiles) {
+        const filePath = path.join(categoryPath, file);
+        const command = require(filePath);
+
+        if ('data' in command && 'execute' in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(`[WARNING] Perintah di ${filePath} tidak memiliki properti "data" atau "execute" yang diperlukan.`);
+        }
     }
 }
 
@@ -52,15 +62,17 @@ client.once('ready', async (c) => {
     });
 
     console.log(`Bot ${client.user.tag} sudah online!`);
-
-    try {
-        await client.player.extractors.loadMulti(DefaultExtractors, true);
-        console.log('✅ Default extractors loaded successfully!');
-    } catch {
-        console.error('❌ Failed to load default extractors:', c.message);
-    }
 });
 
+const linkIdentifier = new LinkIdentifier();
+
+client.on('messageCreate', async (message) => {
+    
+    await linkIdentifier.checkMessage(message);
+    
+});
+
+// Bot Joined the Server! //
 client.on('guildCreate', async guild => {
     let welcomeChannel = null;
 
@@ -96,10 +108,12 @@ client.on('guildCreate', async guild => {
             .addFields(
                 { name: 'Server Name', value: guild.name, inline: true },
                 { name: 'Member Count', value: guild.memberCount.toString(), inline: true },
-                { name: 'Distributed by', value: 'Northden Studios', inline: true }
+                { name: 'Distributed by', value: 'Northden Studios', inline: true },
+                { name: 'Node.js Version', value: 'v21.5.20', inline: true },
+                { name: 'Build Version', value: 'v 1.0.4', inline: true }
             )
-            .setTimestamp()
-            .setFooter({ text: 'Powered by Northden Studios'});
+            .setFooter({ text: 'Powered by Northden Studios' })
+            .setTimestamp();
 
         try {
             await welcomeChannel.send({ embeds: [welcomeEmbed] });
@@ -112,59 +126,50 @@ client.on('guildCreate', async guild => {
     }
 })
 
-client.distube = new DisTube(client, {
-    emitNewSongOnly: true
+const Nodes = [{
+    name: 'catalyst',
+    url: 'aura.zerocloud.id:25036',
+    auth: 'catalystmusic', 
+    secure: false 
+}];
+
+client.manager = new Kazagumo({
+    defaultSearchEngine: 'youtube',
+    plugins: [
+        new Plugins.PlayerMoved(client), 
+    ],
+    send: (guildId, payload) => {
+        const guild = client.guilds.cache.get(guildId);
+        if (guild) guild.shard.send(payload);
+    }
+}, new Connectors.DiscordJS(client), Nodes);
+
+client.manager.on('playerCreate', (player) => {
+    console.log(`[Kazagumo] Player created for guild: ${player.guildId}`);
 });
 
-client.distube
-    .on('playSong', (queue, song) => {
-        const playEmbed = new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setTitle('Now Playing')
-            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setThumbnail(song.thumbnail)
-            .addFields(
-                { name: 'Requested by', value: `${song.user}`, inline: true },
-                { name: 'Volume', value: `${queue.volume}%`, inline: true }
-            )
-            .setTimestamp();
-        queue.textChannel.send({ embeds: [playEmbed] });
-    })
-    .on('addSong', (queue, song) => {
-        const addSongEmbed = new EmbedBuilder()
-            .setColor(0x00FF00)
-            .setTitle('Added to Queue')
-            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setThumbnail(song.thumbnail)
-            .addFields(
-                { name: 'Requested by', value: `${song.user}`, inline: true },
-                { name: 'Position in queue', value: `${queue.songs.length}`, inline: true }
-            )
-            .setTimestamp();
-        queue.textChannel.send({ embeds: [addSongEmbed] });
-    })
-    .on('addList', (queue, playlist) => {
-        const addListEmbed = new EmbedBuilder()
-            .setColor(0xFFA500)
-            .setTitle('Added Playlist to Queue')
-            .setDescription(`[${playlist.name}](${playlist.url}) - \`${playlist.songs.length}\` songs`)
-            .setTimestamp();
-        queue.textChannel.send({ embeds: [addListEmbed] });
-    })
-    .on('error', (channel, e) => {
-        console.error(e);
-        channel.send(`An error encountered: ${e.toString().slice(0, 1970)}`);
-    })
-    .on('empty', channel => channel.send('Voice channel is empty! Leaving the channel...'))
-    .on('disconnect', channel => channel.send('Disconnected from voice channel.'));
+client.manager.on('playerDestroy', (player) => {
+    console.log(`[Kazagumo] Player destroyed for guild: ${player.guildId}`);
+});
 
-    client.distube.on('searchResult', (message, results) => {
-    let i = 0;
-    message.channel.send(
-        `**Choose an option from below**\n${results
-            .map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``)
-            .join('\n')}\n*Enter anything else or wait 30 seconds to cancel*`,
-    );
+client.manager.on('nodeConnect', (node) => {
+    console.log(`[Kazagumo] Node '${node.options.name}' connected!`);
+});
+
+client.manager.on('nodeDisconnect', (node) => {
+    console.warn(`[Kazagumo] Node '${node.options.name}' disconnected!`);
+});
+
+client.manager.on('nodeError', (node, error) => {
+    console.error(`[Kazagumo] Node '${node.options.name}' encountered an error:`, error);
+});
+
+client.manager.on('trackStart', (player, track) => {
+    console.log(`[Kazagumo] Started playing '${track.title}' in guild: ${player.guildId}`);
+});
+
+client.manager.on('queueEnd', (player) => {
+    console.log(`[Kazagumo] Queue ended in guild: ${player.guildId}`);
 });
 
 client.login(token);
