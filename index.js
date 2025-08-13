@@ -127,9 +127,9 @@ client.on('guildCreate', async guild => {
 })
 
 const Nodes = [{
-    name: 'catalyst',
-    url: 'aura.zerocloud.id:25036',
-    auth: 'catalystmusic', 
+    name: '[YOUR NAME SERVER]',
+    url: '[YOUR URL SERVER LINK]',
+    auth: '[YOUR AUTHOR SERVER]', 
     secure: false 
 }];
 
@@ -171,5 +171,6 @@ client.manager.on('trackStart', (player, track) => {
 client.manager.on('queueEnd', (player) => {
     console.log(`[Kazagumo] Queue ended in guild: ${player.guildId}`);
 });
+
 
 client.login(token);
