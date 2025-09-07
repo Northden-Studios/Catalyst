@@ -1,6 +1,7 @@
 <div align="center">
-	<img src="https://github.com/user-attachments/assets/f4d92224-7fe2-4b13-95ad-5204b189478e" alt="description of image" width="400"/>
+	<img src="https://github.com/user-attachments/assets/d892b781-9174-4f52-a26f-cbc3bc199014" alt="description of image" width="400"/>
 </div>
+
 
 <h1 align="center">
 	Catalyst - Your Personal Bot for Discord Servers!
